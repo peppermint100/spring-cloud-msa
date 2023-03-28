@@ -20,6 +20,8 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
     public GatewayFilter apply(Config config) {
         // PreFilter
         return (exchange, chain) -> {
+            // exchange는 스프링 웹플럭스에서 request, response를 사용할 수 있게 해준다.
+            // chain은 filter를 연결해준다.
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
