@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: user-service
+    name: order-service
   h2:
     console:
       enabled: true
@@ -17,15 +17,12 @@ spring:
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-  client: # Eureka 서버에 등록하는 설정
+  client: # Eureka ??? ???? ??
     register-with-eureka: true
     fetch-registry: true
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka
 
-greeting:
-  message: Welcome To the Simple E-Commerce.
-
 logging:
   level:
-    com.peppermint100.userservice: DEBUG
+    com.peppermint100.orderservice: DEBUG
