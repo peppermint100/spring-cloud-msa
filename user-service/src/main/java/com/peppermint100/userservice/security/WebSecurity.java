@@ -1,7 +1,7 @@
 package com.peppermint100.userservice.security;
 
 import com.peppermint100.userservice.service.UserService;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
 
 @Configuration // bean 등록 우선순위가 높음
@@ -17,22 +18,33 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private final Environment env;
     private final UserService userService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public WebSecurity(Environment env, UserService userService) {
+
+    public WebSecurity(Environment env, UserService userService, BCryptPasswordEncoder passwordEncoder) {
         this.env = env;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-//        http.authorizeHttpRequests().antMatchers("/users/**").permitAll();
-        http.authorizeHttpRequests().antMatchers("/**")
-                .authenticated()
-                .and()
-                .addFilter(getAuthenticationFilter());
-
-        http.headers().frameOptions().disable(); // h2 console 사용을 위해 설정
+        http.headers().frameOptions().disable();
+        http.authorizeHttpRequests(authorize -> {
+                    try {
+                        authorize
+                                .antMatchers("/users/**").permitAll()
+                                .antMatchers("/**").permitAll()
+                                .requestMatchers(PathRequest.toH2Console()).permitAll()
+                                .requestMatchers(new IpAddressMatcher("127.0.0.1")).permitAll()
+                                .and()
+                                .addFilter(getAuthenticationFilter());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
@@ -41,13 +53,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         return authenticationFilter;
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 }
