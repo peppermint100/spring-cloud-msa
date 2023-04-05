@@ -29,3 +29,7 @@ greeting:
 logging:
   level:
     com.peppermint100.userservice: DEBUG
+
+token:
+  expirationTime: 86400000
+  secret: secret
