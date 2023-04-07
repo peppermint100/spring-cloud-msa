@@ -34,7 +34,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.authorizeHttpRequests(authorize -> {
                     try {
                         authorize
-                                .antMatchers("/users/**").permitAll()
+//                                .antMatchers("/users/**").permitAll()
+                                .antMatchers("/actuator/**").permitAll()
                                 .antMatchers("/**").permitAll()
                                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                                 .requestMatchers(new IpAddressMatcher("127.0.0.1")).permitAll()

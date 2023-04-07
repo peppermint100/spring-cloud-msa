@@ -50,6 +50,14 @@ spring:
             - RemoveRequestHeader=Cookie # POST로 전달되는 값은 매번 새로운 값으로 설정
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
             - AuthorizationFilter
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/actuator/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie # POST로 전달되는 값은 매번 새로운 값으로 설정
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
           predicates:
@@ -88,3 +96,9 @@ spring:
 
 token:
   secret: secret
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace
