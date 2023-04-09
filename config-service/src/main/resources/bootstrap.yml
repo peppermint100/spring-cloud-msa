@@ -1,0 +1,6 @@
+encrypt:
+#  key: keykeykeykeykeykey123123
+  key-store:
+    location: file://${user.home}/workspace/keystore/apiEncryptionKey.jks
+    password: test1234
+    alias: apiEncryptionKey
