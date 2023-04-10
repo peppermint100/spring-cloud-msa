@@ -3,6 +3,8 @@ package com.peppermint100.userservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableDiscoveryClient // Eureka 서버에 등록될 수 있도록 선언
@@ -12,4 +14,8 @@ public class UserServiceApplication {
 		SpringApplication.run(UserServiceApplication.class, args);
 	}
 
+	@Bean
+	public RestTemplate getRestTemplate() {
+		return new RestTemplate();
+	}
 }
