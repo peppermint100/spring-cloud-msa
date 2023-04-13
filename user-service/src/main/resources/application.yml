@@ -33,7 +33,7 @@ greeting:
 
 logging:
   level:
-    com.peppermint100.userservice: DEBUG
+    com.peppermint100.userservice.client: DEBUG
 
 
 #token:
